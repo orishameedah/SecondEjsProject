@@ -1,0 +1,365 @@
+Backend Technology
+- Nodejs (backend)
+
+Frontend Libraries
+- Bootstrap 5 (styling)
+- Datatable (pagination, sorting, e.t.c)
+- Fontawesome (icons)
+
+Database Technology
+Mongodb 
+
+Backend Packages or Third Party Library
+- Express Js (framework based on Nodejs)
+- Mongoose (Object Date Modelling (DOM) library)
+- EJS (Embedded Javascript Templating Engine)
+- Multer (image Uploading)
+- Express session (storing session message)
+- Dotenv (for loading environment variables from .env file)
+- Nodemon (monitoring the backend server)
+
+Deployment
+- Deploy the source code to Github
+- Deploy the app to Cyclic cloud hosting service
+
+Let start coding
+- open second Ejsproject15012023 inside vscode
+- let check node version like this
+C:\ejsproject\secondEjsProject15012023>node --version
+- let generate package.json file for managing the thrd party libraries like this
+C:\ejsproject\secondEjsProject15012023>npm init -y
+- let change the entry point from index.js to main.js inside package.json file
+- let install the following packags like this
+C:\ejsproject\secondEjsProject15012023>npm i ejs@3.1.6 multer@1.4.4-lts.1 dotenv@8.2.0 express-session@1.17.1 
+express@4.17.1 mongoose@5.11.15
+- let install nodemon like this
+C:\ejsproject\secondEjsProject15012023>npm i -D nodemon@2.0.20
+- note that as we are installing all packages for the app, its will generate node_modules folder to store all our dependencies
+
+- create main.js file to setup the backend server in the root folder
+- let create .env file in the root folder to setup the environment variables
+- usae nodemon inside script object inside package.json from this
+"scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+},
+to this
+"scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node main.js",
+    "dev": "nodemon main.js"
+  },
+- let setup main.js file with basic structure of backend server
+- let setup the backend server like this
+C:\ejsproject\secondEjsProject15012023>npm run dev
+- let hold down ctrl key and click on this url server running at http://localhost 5000
+it render Hello World on the browser which means our server is working fine.
+
+Setup Mongodb
+- by going to mongodb.com, click on products tab, click on Community Server to install mongodb locally
+- click on Compass for mongodb GUI
+- install mongodb and Compass GUI setup
+- add url of local mongodb onto .env file
+- setup the mongoose connection inside main.js file
+- let view the connected to Database on the terminal
+
+let add middlewares 
+- middlewares are functions with three arguments namely req, res and next()
+app.use(express.urlencoded({ extended: false })) //it enables user to send and receive data from frontend to backend
+app.use(express.json()) //send information from javascript format to json format to be reable in our server application
+app.use(session({
+    secret: 'mysecret ejs',
+    saveUninitialized: true,
+    resave: false,
+}))
+
+//for saving session message onto the req object
+app.use((req, res, next) => {
+    res.locals.message = req.session.message;
+    delete req.session.message;
+    next();
+});
+
+// add this to view the images on the ejs page
+app.use(express.static('public'))
+
+// set the template engines which is EJS
+app.set('view engine', 'ejs')
+
+- create routes folder inside the root folder 
+- create routes.js file inside routes folder to write all the routes or apis
+- create models folder in the root folder, it will contain the ODM (Object Data Modelling)
+- create users.js file inside models folder to describe the structure of our mongodb
+- let setup models/users.js file
+- let setup routes/routes.js file 
+
+- remove this api from main.js backend server
+app.get('/', (req, res)=> {
+    res.send('Hello world');
+});
+- replace the above api with route prefix by using routes/routes.js main.js backend server like this
+app.use('', router);
+- import the above like this
+const router = require('./routes/routes');
+- let test our app on the browser
+
+- create views folder in the root folder to store all our ejs files
+- create index.ejs file inside views folders
+- let setup views/index.ejs file
+
+- inorder to view index.ejs file on the browser let replace the api inside routes/routes.js file
+from this
+router.get('/', (req, res)=> {
+    res.send('Hello world');
+})
+to this
+router.get('/', (req, res)=> {
+    res.render('index', { title: 'Home Page' });
+});
+- let refresh our browser content to view the content of index.ejs
+
+- google search cdn.js com, click on cdnjs - The #1 free and open source cdn built to make life...
+- search for Bootstrap, click on twitter-bootstrap
+- copy this link tag
+https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css
+- paste it right after titgle tags inside index.ejs
+- copy this script tag
+https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.bundle.min.js
+- paste it right before the closing body tags
+
+- still on cdnjs website search for font, font-awesome
+- copy this link tags
+https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css
+- paste it right after the twitter-bootstrap link
+- let write the content inside the body tags of index.ejs file
+- after adding font-awesome link at the head tag, google search font awesome icons, click on Font Awesome Icon, type the
+name of the icon you want then click on the icon, scroll down to copy the icon
+
+- create a layout folder inside views folder 
+- create header.ejs and footer.ejs file inside views/layout folder
+- let cut the html tags inside index.ejs file from <!DOCTYPE html> to </nav> onto
+views/layout/header.ejs
+- cuts from opening script tags to closing tags of </html> from index.ejs to footer.ejs file then save.
+- let use both header.ejs and footer.ejs inside index.ejs file like this
+<%- include('layout/header') %>
+<%- include('layout/footer') %>
+
+- let add more content in between the header and footer layout inside index.ejs file
+
+- replace this api
+from this
+router.get('/', (req, res)=> {
+    res.render('index', { title: 'Home Page' });
+});
+to this
+router.get('/', (req, res)=>{
+    User.find().exec((err, users)=>{
+        if(err){
+            res.json({message: err.message});
+        }else{
+            res.render('index', {title: 'Home Page', users: users})
+        }
+    })
+})
+
+- let create another route or api inside routes/routes.js file like this
+router.get('/add',  (req,res)=>{
+    res.render('add_user', {title: 'Add Users'})
+})
+- let create add_users file inside views folder
+- copy the current content of index.ejs file onto add_users.ejs file
+- let refresh the browser the view the updated content
+- add more tags onto add_users.ejs file
+- let refresh the browser the view the updated content
+
+- import models/user.js file inside routes/routes.js like this
+const User = require('../models/users');
+- import multer to upload images for the app like this
+const multer = require('multer');
+- create upload folder in the root folder inorder to store the images uploaded
+- let write the code for uploading images right before router.get('/', ()=>{}) like this
+var storage = multer.diskStorage({
+    destination: function(req, file, cb){
+        cb(null, '/public/uploads');
+    },
+    filename:  function(req, file, cb){
+        cb(null, file.fieldname + '_' + Date.now() + '_' + file.originalname );
+    }
+})
+
+//middlewares
+var upload = multer({
+    storage: storage,
+}).single('image') 
+
+let create api or route to insert data onto mongodb by using router.post() api inside routes.routes.js right after after 
+var upload = multer({}) like this
+
+router.post('/add', upload, (req, res)=> {
+    const user = new User({
+        name: req.body.name,   //represent the body of our html tags that we aare sending to backend
+        email: req.body.email,
+        phone: req.body.phone,
+        image: req.body.fieldname,
+    });
+
+user.save((err)=> {
+        if(err){
+            res.json({ message: err.message, type: 'danger' });
+        }else{
+            req.session.message ={
+                type: 'success', 
+                message: 'User added successfully!',
+            };
+        }
+        console.log(req.session)
+        res.redirect('/')
+    })
+})
+- let test the /add route on Add User Page to see if our interface is working with the api and inserting onto mongodb
+- once you click on submit button its redirect user to Home Page
+- let check the local mongodb to view our record inserted
+- let create public folder then create nested uploads folder in the root folder to view the picture image uploaded
+- next is to display the success message on index.ejs when data is inserted onto mongodb right after the <div class="col-lg-12"> like this
+<!-- message is coming from req.session.message object in routes.js -->
+<% if(message){ %>  
+<%= message.type %>" means render the color dynamically red means danger while green means success
+    <div 
+        class="alert alert-dismissible fade show alert-<%= message.type %>" 
+        role="alert"
+    >
+    <button 
+        class="btn-close" 
+        type="button" 
+        data-bs-dismiss="alert" 
+        aria-label="close"
+    ></button>
+    <strong><%= message.message %></strong>
+    </div>
+<% } %>
+
+- let test if the message is rendering correctly onto index.ejs file
+
+- next is to get data from the mongodb and render it on the index.ejs
+- let use the users record fetched from the mongodb on index.ejs and replace the static user datawith dynamic content
+- add ejs if then else statement right after <div class="table-responsive"> to render the user data from db
+- cut the content ot table tags and past it inside the if body statement
+- code No users found in the database in the else block
+- let use forEach() array method inside <tbody></tbody> to render users record dynam by first cut the static user record
+in <tr></tr> tags and then paste its inside the callback function inside forEach array method
+- let refresh our browser, it will not render image
+- let fix the above issue by adding
+app.use(express.static('public'));
+
+- let add data table for pagination and sorting by google search database.net, click on Download, click on Bootstrap 4
+* scroll down on step 3. Pick a download method
+* copy this
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.13.1/datatables.min.css"/>
+* open views/layout/header.ejs file and paste it inside head tags
+* copy the script tags 
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.13.1/datatables.min.js"></script>
+* open views/layout/footer.ejs file and paste it inside the foot tags
+
+* we also need jquery to intialize the datatable by
+* google search cdnjs.com
+* search for jquery
+* click on jquery
+* click on script tags of this
+https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js
+* paste it on the top of views/layout/footer.ejs file
+* add another script tags right before </body> which is this
+<script>
+    $(document).ready(function(){
+        $("table").DataTable({
+            order:[0, 'desc']
+        })
+    })
+</script>
+
+- let refresh the browser to view the new content
+
+- create edit_users.ejs inside views folder
+- copy  the content of add_users onto edit_users.ejs
+- change the content of edit_users.ejs file
+- let change the action 
+from this
+<form 
+    action="/add"
+    method="post" 
+    id="add-form" 
+    enctype="multipart/form-data"
+>
+to this
+<form 
+    action="/update/<%= user._id %>"
+    method="post" 
+    id="add-form" 
+    enctype="multipart/form-data"
+>
+- let add value attribute to all input field inorder to display the fetch like this
+value=<%= user.name %>
+- let add img tag inside the div that hold image detail like this
+<img src="/uploads/<%= user.image %>" alt="<%= user.name %>" width="350" class="img-thumbnail mt-1">
+- add another input field right before the update button like this
+<input type="hidden" name="old_image" value="<%= user.image %>"/>
+- change the button to Update User and change the class selector to btn-success
+from this <div class="card-header bg-primary"> to this<div class="card-header bg-success">
+
+- create edit user route or api inside routes.js file inorder to be able to edit user recodr inside the mongodb
+- let test when we click on edit icon in index.ejs may be its will return Edit User Page with all the user record from mongodb.
+
+- next is to create api or route inside routes.js file to update the fetched user record from the db when User click on Update User button in 
+Edit User Page
+- let test if the updated button is updating user record
+- remove required attribute from image input inside edit_users.ejs inorder to allow us to update without changing image.
+
+- next is to create api or route inside routes.js file inorder to delete user from the mongodb by clicking on delete icon inside index.ejs file
+- let refresh the browser then delete any user record to see that the delete button is working.
+- let check the db to view the list of current record.
+
+- let change the local mongodb to cloud based mongodb
+* googgle search http://www.mongodb.com/
+* for new user click on Try free button and for existing user Sign in
+- click on the current project on the menubar
+- click on + New project
+- Name your Project: nodeEjsProject
+- Click on Next button
+- click on create Project
+- click on Build a database
+- click on create Free Plan
+- click on create Cluster button
+- How would you like to authenticate your connection?
+* Username: nodeEjs
+* Password: nodeEjs
+* Click on create user button
+* click on Network access
+* click on Add IP Address button
+* click on ALLOW ACCESS FROM ANYWHERE button
+* click on confirm button
+- click Atlas logo
+- click on nodeEjsProject
+* click on connect button
+* Driver: Nodejs version: 2.2.12 or localStorage
+* let copy mongodb url
+- let go back to our project inorder to replace the local mongodb to Atlas mongodb url
+* inside the <password> to the password you use in mongodb
+- let stop and start serverto know if our connecton to mongodb Atlas is working well
+- click on this url Server started at http://localhost:5000
+- its return No users found in the database!
+- let add user record by clicking on Add User tab
+- back to Atlas mongodb.co to click on browser Collections button to view your database with your collection
+
+- let add .gitignore file to remove node_modules folder from Github
+
+Deploy app to Github
+- let signin
+- click on Deploy button
+- click Link Your Own
+- search for respository secondEjsProject
+- expand Advanced
+- change Node to Node 14.20.0
+- click on Approve and install
+- your app deploy successful
+- Environment Variables
+* click on Variables
+* add your mongodb atlas url onto Key-Value Editor
+* delete every other environment variables that is setup by you
