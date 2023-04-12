@@ -16,6 +16,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    cloudinary_id: {
+        type: String,
+    },
     created: {
         type: Date,
         required: true,

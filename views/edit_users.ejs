@@ -11,7 +11,7 @@
                <div class="card-body p-4">
                 <form 
                     action="/update/<%= user._id %>"
-                    method="post" 
+                    method="post"
                     id="add-form" 
                     enctype="multipart/form-data"
                 >
@@ -55,7 +55,7 @@
                             name="image" 
                             class="form-control form-control-lg"  
                         >
-                        <img src="/uploads/<%= user.image %>" alt="<%= user.name %>" width="350" class="img-thumbnail mt-1">
+                        <img src="<%= user.image %>" alt="<%= user.name %>" width="350" class="img-thumbnail mt-1">
                     </div>
                     <input type="hidden" name="old_image" value="<%= user.image %>"/>
                     <div class="mb-3 d-grid">

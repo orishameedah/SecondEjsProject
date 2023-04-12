@@ -350,6 +350,14 @@ Edit User Page
 
 - let add .gitignore file to remove node_modules folder from Github
 
+C:\ejsproject\secondEjsProject15012023> git init
+C:\ejsproject\secondEjsProject15012023> git add .
+C:\ejsproject\secondEjsProject15012023> git status
+C:\ejsproject\secondEjsProject15012023> git commit -m "secondejs"
+C:\ejsproject\secondEjsProject15012023> git branch -M main
+C:\ejsproject\secondEjsProject15012023> git remote add origin https://github.com/orishameedah/SecondEjsProject.git
+C:\ejsproject\secondEjsProject15012023> git push -u origin main
+
 Deploy app to Github
 - let signin
 - click on Deploy button
@@ -363,3 +371,64 @@ Deploy app to Github
 * click on Variables
 * add your mongodb atlas url onto Key-Value Editor
 * delete every other environment variables that is setup by you
+
+Copy and paste secondEjsProject15012023 folder to our file explorer and rename it secondEjsProject15012023Cloudinary
+- Open main.js file to remove all the comment 
+- remove or comment this in main.js file
+app.use(express.static('public'))
+
+-Open index.ejs to remove all the unneccessary comment comment
+- change the image input field from this    src="/uploads/<%= user.image %>" 
+to this    src="<%= user.image %>" 
+
+-Open views/edit_users.ejs to remove all the unneccessary comment comment
+- change the image input field from this    src="/uploads/<%= user.image %>" 
+to this    src="<%= user.image %>" 
+
+- Create a utils folder 
+- create cloudinary.js file in the utils folder
+- install cloudinary library like this
+C:\ejsproject\secondEjsProject15012023> npm install cloudinary
+- Google search cloudinary.com
+- Sign Up for new user, Login for existing user
+- Email:- orishameedah@gmail.com
+- Password:- Meedah7002*
+- Click on Get Started 
+- Copy the cloudinary configuration
+- Paste it inside utils/cloudinary.js
+- open .env file to create the following environment variables
+CLOUD_NAME, API_KEY, API_SECRET and store neccessary value onto them
+- Open models/users.js file to add new field to store cloudinaryId for deleting and updating images purpose right before created field
+like this 
+cloudinary_id: {
+        type: String,
+    },
+
+- Open routes/routes.js file to refactor our code for cloudinary 
+- import utils/cloudinary.js like this
+const cloudinary = require("../utils/cloudinary");
+- replace this to this from this
+// var storage = multer.diskStorage({
+//     // destination: function(req, file, cb){
+//     //     cb(null, './public/uploads');
+//     // },
+//     // filename:  function(req, file, cb){
+//     //     cb(null, file.fieldname + '_' + Date.now() + '_' + file.originalname );
+//     // }
+// })
+- to this
+var storage = multer.diskStorage({})
+- modify the post/add route api with cloudinary
+- let test /add route
+- check the cloudinary media file to view the image insert
+- check Atlas mongodb to view the document inserted
+
+- modify the post/update/:id route api with cloudinary
+- let test /update/:id route
+- check the cloudinary media file to view the image update
+- check Atlas mongodb to view the document updated
+
+- modify the get /delete/id route with cloudinary
+- manually delete all existing all existing documents in Atlas Mongodb
+- check the cloudinary media file to view the image updated
+- check Atlas mongodb to view the document inserted
